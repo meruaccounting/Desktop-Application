@@ -1,0 +1,23 @@
+{
+  "name": "kc-screen-monitoring",
+  "version": "0.0.1",
+  "description": "KC Screen Monitoting App",
+  "author": "Hardik Barot",
+  "main": "app.js",
+  "scripts": {
+    "start": "electron app.js"
+  },
+  "devDependencies": {
+    "electron": "11.1.1",
+    "electron-builder": "^22.9.1"
+  },
+  "dependencies": {
+    "@getstation/electron-google-oauth2": "^2.1.0",
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
+    "googleapis": "^39.2.0",
+    "mongoose": "^6.0.13",
+    "mssql": "^6.3.1",
+    "request": "^2.88.2"
+  }
+}

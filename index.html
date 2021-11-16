@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>KC Screen Monitoring</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/bootstrap/css/fontawesome.min.css" />
+  </head>
+  <body class="content" style="text-align: center;">
+    <div id="login-details">
+      <img src="assets/images/icon.png" />
+      <h2>Log in and get to work <br>
+    <span style="color: red;" id="errorL"></span></h2>
+      <span id="start-auth" style="cursor: pointer; display:inline-block;background-image: url(assets/images/loginGoogle.png);height:70px;width:260px;"></span>
+    </div>
+    <div>
+    <div id="main-details" style="display: none; margin: 15px;margin-top: 0px;">
+        <div class="row">
+            <div class="col-10">
+                <div class="input-group has-validation">
+                    <span style="border-right: none; background: none;" class="input-group-text" id="inputGroupPrepend"> &#x1F50D; </span>
+                    <input onkeyup="searchProjects(this)" style="border-left: none;" type="text" class="form-control" placeholder="Search Tasks" id="searchbox" aria-describedby="inputGroupPrepend" required="">                   
+                    <div class="invalid-feedback">
+                      Please search project.
+                    </div>
+                  </div>
+            </div>
+            <div onclick="refreshProjects();" class="col-2" style="cursor: pointer; text-align: center; font-size: 22px; color: green;">
+                &#x21bb;
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col" style="text-align: left; color: green;">
+                Contract
+                <svg style="width: 18px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+                    <g>
+                        <g>
+                            <path d="M196.5,406.122c-11.046,0-20,8.954-20,20V492c0,11.046,8.954,20,20,20s20-8.954,20-20v-65.878    C216.5,415.076,207.546,406.122,196.5,406.122z"/>
+                        </g>
+                    </g>
+                    <g>
+                        <g>
+                            <path d="M236.5,326h-20V20c0-11.046-8.954-20-20-20s-20,8.954-20,20v306h-20c-11.046,0-20,8.954-20,20c0,11.046,8.954,20,20,20h80    c11.046,0,20-8.954,20-20C256.5,334.954,247.546,326,236.5,326z"/>
+                        </g>
+                    </g>
+                    <g>
+                        <g>
+                            <path d="M60.5,144.122c-11.046,0-20,8.954-20,20V492c0,11.046,8.954,20,20,20s20-8.954,20-20V164.122    C80.5,153.076,71.546,144.122,60.5,144.122z"/>
+                        </g>
+                    </g>
+                    <g>
+                        <g>
+                            <path d="M100.5,64.244h-20V20c0-11.046-8.954-20-20-20s-20,8.954-20,20v44.244h-20c-11.046,0-20,8.954-20,20    c0,11.046,8.954,20,20,20h80c11.046,0,20-8.954,20-20C120.5,73.198,111.546,64.244,100.5,64.244z"/>
+                        </g>
+                    </g>
+                    <g>
+                        <g>
+                            <path d="M451.5,171.168c-11.046,0-20,8.954-20,20V492c0,11.046,8.954,20,20,20c11.046,0,20-8.954,20-20V191.168    C471.5,180.122,462.546,171.168,451.5,171.168z"/>
+                        </g>
+                    </g>
+                    <g>
+                        <g>
+                            <path d="M491.5,91.122h-20V20c0-11.046-8.954-20-20-20c-11.046,0-20,8.954-20,20v71.122h-20c-11.046,0-20,8.954-20,20    c0,11.046,8.954,20,20,20h80c11.046,0,20-8.954,20-20S502.546,91.122,491.5,91.122z"/>
+                        </g>
+                    </g>
+                    <g>
+                        <g>
+                            <path d="M321.5,318.122c-11.046,0-20,8.954-20,20V492c0,11.046,8.954,20,20,20c11.046,0,20-8.954,20-20V338.122    C341.5,327.076,332.546,318.122,321.5,318.122z"/>
+                        </g>
+                    </g>
+                    <g>
+                        <g>
+                            <path d="M361.5,238.244h-20V20c0-11.046-8.954-20-20-20c-11.046,0-20,8.954-20,20v218.244h-20c-11.046,0-20,8.954-20,20    s8.954,20,20,20h80c11.046,0,20-8.954,20-20C381.5,247.198,372.546,238.244,361.5,238.244z"/>
+                        </g>
+                    </g>
+                    </svg>
+            </div>
+            <div class="col" style="text-align: right;">
+                Hours this week
+            </div>
+        </div>
+        <hr style="margin: 8px -15px; border: 1px solid;" />
+        <div class="row" id="allprojectsv" style="max-height: 390px; overflow-y: auto;">
+            <div class="col">
+                <div class="row">
+                    <div onclick="document.getElementById('task-details').style='display: block;';document.getElementById('main-details').style='display: none;';" class="col-8" style="text-align: left; cursor: pointer;">
+                        <h5 style="color: green; margin-bottom: 0px;">Accountant Needed</h5>
+                        <span style="font-size: 12px;">Lindsev Mc, Shinto's Pet Food</span>
+                    </div>
+                    <div class="col-4" style="text-align: right;">
+                        <h5 style="margin-bottom: 0px;">0hr 30m</h5>
+                        <div class="progress" style="height: 5px; margin-top:5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 25%; background-color: green;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span style="font-size: 12px;">of 15hr</span>
+                    </div>
+                    <div class="col" >
+                        <hr />
+                    </div>
+                </div>
+                <div class="row">
+                    <div onclick="document.getElementById('task-details').style='display: block;';document.getElementById('main-details').style='display: none;';" class="col-8" style="text-align: left; cursor: pointer;">
+                        <h5 style="color: green; margin-bottom: 0px;">Accountant Needed</h5>
+                        <span style="font-size: 12px;">Lindsev Mc, Shinto's Pet Food</span>
+                    </div>
+                    <div class="col-4" style="text-align: right;">
+                        <h5 style="margin-bottom: 0px;">0hr 30m</h5>
+                        <div class="progress" style="height: 5px; margin-top:5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 25%; background-color: green;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span style="font-size: 12px;">of 15hr</span>
+                    </div>
+                    <div class="col" >
+                        <hr />
+                    </div>
+                </div>
+                <div class="row">
+                    <div onclick="document.getElementById('task-details').style='display: block;';document.getElementById('main-details').style='display: none;';" class="col-8" style="text-align: left; cursor: pointer;">
+                        <h5 style="color: green; margin-bottom: 0px;">Accountant Needed</h5>
+                        <span style="font-size: 12px;">Lindsev Mc, Shinto's Pet Food</span>
+                    </div>
+                    <div class="col-4" style="text-align: right;">
+                        <h5 style="margin-bottom: 0px;">0hr 30m</h5>
+                        <div class="progress" style="height: 5px; margin-top:5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 25%; background-color: green;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span style="font-size: 12px;">of 15hr</span>
+                    </div>
+                    <div class="col" >
+                        <hr />
+                    </div>
+                </div>
+                <div class="row">
+                    <div onclick="document.getElementById('task-details').style='display: block;';document.getElementById('main-details').style='display: none;';" class="col-8" style="text-align: left; cursor: pointer;">
+                        <h5 style="color: green; margin-bottom: 0px;">Accountant Needed</h5>
+                        <span style="font-size: 12px;">Lindsev Mc, Shinto's Pet Food</span>
+                    </div>
+                    <div class="col-4" style="text-align: right;">
+                        <h5 style="margin-bottom: 0px;">0hr 30m</h5>
+                        <div class="progress" style="height: 5px; margin-top:5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 25%; background-color: green;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span style="font-size: 12px;">of 15hr</span>
+                    </div>
+                    <div class="col" >
+                        <hr />
+                    </div>
+                </div>
+                <div class="row">
+                    <div onclick="document.getElementById('task-details').style='display: block;';document.getElementById('main-details').style='display: none;';" class="col-8" style="text-align: left; cursor: pointer;">
+                        <h5 style="color: green; margin-bottom: 0px;">Accountant Needed</h5>
+                        <span style="font-size: 12px;">Lindsev Mc, Shinto's Pet Food</span>
+                    </div>
+                    <div class="col-4" style="text-align: right;">
+                        <h5 style="margin-bottom: 0px;">0hr 30m</h5>
+                        <div class="progress" style="height: 5px; margin-top:5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 25%; background-color: green;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span style="font-size: 12px;">of 15hr</span>
+                    </div>
+                    <div class="col" >
+                        <hr />
+                    </div>
+                </div>
+                <div class="row">
+                    <div onclick="document.getElementById('task-details').style='display: block;';document.getElementById('main-details').style='display: none;';" class="col-8" style="text-align: left; cursor: pointer;">
+                        <h5 style="color: green; margin-bottom: 0px;">Accountant Needed</h5>
+                        <span style="font-size: 12px;">Lindsev Mc, Shinto's Pet Food</span>
+                    </div>
+                    <div class="col-4" style="text-align: right;">
+                        <h5 style="margin-bottom: 0px;">0hr 30m</h5>
+                        <div class="progress" style="height: 5px; margin-top:5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 25%; background-color: green;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span style="font-size: 12px;">of 15hr</span>
+                    </div>
+                    <div class="col" >
+                        <hr />
+                    </div>
+                </div>
+                <div class="row">
+                    <div onclick="document.getElementById('task-details').style='display: block;';document.getElementById('main-details').style='display: none;';" class="col-8" style="text-align: left; cursor: pointer;">
+                        <h5 style="color: green; margin-bottom: 0px;">Accountant Needed</h5>
+                        <span style="font-size: 12px;">Lindsev Mc, Shinto's Pet Food</span>
+                    </div>
+                    <div class="col-4" style="text-align: right;">
+                        <h5 style="margin-bottom: 0px;">0hr 30m</h5>
+                        <div class="progress" style="height: 5px; margin-top:5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 25%; background-color: green;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span style="font-size: 12px;">of 15hr</span>
+                    </div>
+                    <div class="col" >
+                        <hr />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="task-details" style="display: none;" class="container" class="row justify-content-md-center">
+        <div>
+            <div class="row">
+                <div onclick="refreshProjects();document.getElementById('task-details').style='display: none;';document.getElementById('main-details').style='display: block; margin: 15px;margin-top: 0px;';" class="col-1">
+                    <h1 style="padding-top: 10px; color: green; cursor: pointer;"> < </h1>
+                </div>
+                <div class="col-11" style="text-align: left;">
+                    <h5 class="text-success" style="margin-bottom: 0px;" id="hProjectName">Accountant Needed</h5>
+                    <span style="font-size: 12px;"><b  id="hClientName">Lindsey Mc</b> <span  id="hProjectDesc"> Shinto's Pet Food</span></span>
+                </div>
+            </div>
+            <hr style="margin: 5px -12px; border: 1px solid;" />
+            <div class="row">
+                <div class="col-7" style="text-align: left;">
+                    <span class="text-muted">Current Session</span>
+                    <h1 id="timId">0 hrs 00 m</h1>
+                    <span style="font-size: 12px;" class="text-muted">Today (<span id="hDayOfWeek">Sat</span> UTC)</span>
+                    <h5 style="font-size: 12px;" id="hConsumeTime">0:30 hrs</h5>
+                </div>
+                <div class="col-5" style="text-align: right;">
+                    <label class="switch" style="margin-top: 22px;">
+                        <input id="handleCheckbox" onclick="handleCapture(this)" type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                    <span style="display: block; font-size: 12px;" class="text-muted" style="display: block;">This week (UTC)</span>
+                    <span style="font-size: 12px;" class="text-muted" style="display: block;" id="hOutOfTime">0:30 of 15 hrs</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <select class="form-select" id="selectTask">
+                    </select>
+                    <!--<textarea class="form-control mt-2" placeholder="What are you looking on?"></textarea>-->
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h6 class="text-muted" style="text-align: left;">Last Screen Capture</h6>
+                <div class="card" style="width: 100%;height: 200px;">
+                    <div class="card-body" class="col-xs-1 center-block text-center">
+                        <img id="lastImage" style="width: 100%;" />
+                    </div>
+                </div>
+                <div style="display: none;" class="text-muted">
+                    <a style="color: green;" class="text-center pr-3">View work diary</a>
+                    <span style="margin: 0px 15px;">|</span>
+                    <a  style="color: green;" class="text-center pl-3">Add manual time</a>
+                </div>
+    
+            </div>
+    
+        </div>
+    </div>
+    
+    <div class="row" id="footer" style="display: none;">
+        <div class="col" style="padding: 10px; color: #999; text-align: left; position: fixed; bottom: 0px; background-color: #f3f3f3; left: 0px;">
+            &#9881; &nbsp;<span id="user-name">Hardik Barot</span> <span onclick="logout()" style="cursor: pointer; float: right;" >Logout</span>
+        </div>
+    </div>
+</div>
+    <div style="display: none;">
+      <h1>Welcome</h1>
+    <div id="tookens"></div>
+
+    <video></video>
+<button onclick="getVideoSources()">getsource</button>
+<button  class="button is-primary">Start</button>
+<button id="startBtn" class="button is-primary">Start</button>
+    <button id="stopBtn" class="button is-warning">Stop</button>
+
+    <hr />
+
+    <button id="videoSelectBtn" class="button is-text">
+      Choose a Video Source
+    </button>
+</div>
+  </body>
+  <script src="assets/bootstrap/js/bootstrap.min.js" ></script>
+  <script defer src="render.js"></script>
+<script>
+    window.onkeydown = function(e){
+        if(e.altKey){
+            e.preventDefault();
+        }
+    }
+</script>
+</html>
